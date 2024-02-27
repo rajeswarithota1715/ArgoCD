@@ -13,5 +13,6 @@
 
 • You can register repos using declarative approach, cli and web UI.
 <pre>
+ 
 </pre>
 ![private got repo](https://github.com/rajeswarithota1715/ArgoCD/blob/main/git-private-repo.PNG)  
