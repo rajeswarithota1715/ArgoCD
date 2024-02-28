@@ -40,4 +40,4 @@ https://kubernetes.default.svc --sync-policy automated
 </pre>
 
 ####   WEB UI
-![Web UI]()
+![Web UI](auto-sync-UI.png)
