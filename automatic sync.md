@@ -83,6 +83,24 @@ directly.
 
 Delete the service file from git repo and notice that its not deleted from destination cluster.
 
+<pre>
+controlplane $ kubectl get all -n auto-pruning-demo
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/guestbook-ui-56c646849b-8ntl8   1/1     Running   0          5m5s
+
+NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/guestbook-ui   ClusterIP   10.100.248.76   <none>        80/TCP    5m5s
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/guestbook-ui   1/1     1            1           5m5s
+
+NAME                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/guestbook-ui-56c646849b   1         1         1       5m5s
+controlplane $ 
+</pre>
+
+![Web UI](auto purne.PNG)
+
 ###   with auto prune enabled
 <pre>
 apiVersion: argoproj.io/v1alpha1
@@ -110,18 +128,17 @@ spec:
 
 Then, enable the auto pruning in application definition and verify the service is deleted from destination cluster.
 
-<pre>
-controlplane $ kubectl get all -n auto-pruning-demo
-NAME                                READY   STATUS    RESTARTS   AGE
-pod/guestbook-ui-56c646849b-8ntl8   1/1     Running   0          5m5s
+![Web UI](autopurne.PNG)
 
-NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
-service/guestbook-ui   ClusterIP   10.100.248.76   <none>        80/TCP    5m5s
+<pre>
+   controlplane $ kubectl get all -n auto-pruning-demo
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/guestbook-ui-56c646849b-8ntl8   1/1     Running   0          24m
 
 NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/guestbook-ui   1/1     1            1           5m5s
+deployment.apps/guestbook-ui   1/1     1            1           24m
 
 NAME                                      DESIRED   CURRENT   READY   AGE
-replicaset.apps/guestbook-ui-56c646849b   1         1         1       5m5s
-controlplane $ 
+replicaset.apps/guestbook-ui-56c646849b   1         1         1       24m
 </pre>
+
