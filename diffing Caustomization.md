@@ -15,7 +15,8 @@ Argo CD allows you to optionally ignore differences for certain parts of resourc
     * RFC6902 JSON patches at a specific JSON path (json pointers)
     * JQ path expressions.
     * Ignore differences from fields owned by specific managers defined in metadata.managedFields.
- 
+
+ Will ignore differences between live and desired states during the diff.his will ignore differences in spec.replicasfor all deployments for this application.
 <pre>
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -83,3 +84,75 @@ controlplane $
 Even after increasing the replicas in kubernetes cluster the argoCD application still will bein sync
 
 ![diff](https://github.com/rajeswarithota1715/ArgoCD/blob/e8a2f54af0d9f751d7eaf4633edd6ed6b55b4366/diff.PNG)
+
+Application level– Json Pointers –for specific resource
+This will ignore differences in spec.replicasfor deployment with name guestbook .
+<pre>
+ apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+name: kustomize-guestbook
+namespace: argocd
+spec: 
+destination: 
+namespace: guestbook
+server: "https://kubernetes.default.svc"
+project: default
+source: 
+path: kustomize-guestbook
+repoURL: "https://github.com/argoproj/argocd-example-apps.git"
+targetRevision: HEAD
+ignoreDifferences:
+- group: apps
+kind: Deployment
+name: guestbook
+jsonPointers:
+- /spec/replicas
+</pre>
+
+Application level– jq expressions
+Use JQ path expressions to identify list items based on item content
+<pre>
+ apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+name: kustomize-guestbook
+namespace: argocd
+spec: 
+destination: 
+namespace: guestbook
+server: "https://kubernetes.default.svc"
+project: default
+source: 
+path: kustomize-guestbook
+repoURL: "https://github.com/argoproj/argocd-example-apps.git"
+targetRevision: HEAD
+ignoreDifferences:
+- group: apps
+kind: Deployment
+jqPathExpressions:
+- .spec.template.spec.initContainers[] | select(.name == "injected-init-container")
+</pre>
+Application level– by specific managers
+will ignore differences from all fields owned by kube-controller-manager for all resources belonging to this application
+<pre>
+ apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+name: kustomize-guestbook
+namespace: argocd
+spec: 
+destination: 
+namespace: guestbook
+server: "https://kubernetes.default.svc"
+project: default
+source: 
+path: kustomize-guestbook
+repoURL: "https://github.com/argoproj/argocd-example-apps.git"
+targetRevision: HEAD
+ignoreDifferences:
+- group: *
+kind: *
+managedFieldsManagers:
+- kube-controller-manager
+</pre>
